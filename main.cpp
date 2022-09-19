@@ -110,35 +110,33 @@ public:
         return sz;
     }
 
+    bool just_one_left() const {
+        return size() == 1;
+    }
 };
 
-bool last(Node *node) {
-    return node->next == nullptr;
-}
-
-void printList(Node *node) {
-    if (last(node)) {
+void print(List &list) {
+    auto node = list.head;
+    while (node != nullptr) {
         std::cout << node->val << " ";
-    } else {
-        std::cout << node->val << " ";
-        printList(node->next);
+        node = node->next;
     }
 }
 
-int sumElements(Node *node) {
-    int sum;
-    if (last(node)) {
-        sum = node->val;
-    } else {
-        auto ret = sumElements(node->next);
-        sum = ret + node->val;
-    }
-    return sum;
-}
+//int sumElements(Node *node) {
+//    int sum;
+//    if (last(node)) {
+//        sum = node->val;
+//    } else {
+//        auto ret = sumElements(node->next);
+//        sum = ret + node->val;
+//    }
+//    return sum;
+//}
 
 List reverseList(List list) {
     List reversed;
-    if (list.size() == 1) {
+    if (list.just_one_left()) {
         reversed = list;
     } else {
         reversed = reverseList(List(list, 1));
@@ -149,13 +147,13 @@ List reverseList(List list) {
 
 
 int main() {
-    List list(5);
+    List list(10000);
     list = List(list, 1);
     auto l2 = List(list, 1);
-    printList(list.head);
+    print(list);
     std::cout << std::endl;
-    auto pair = reverseList(list);
-    printList(pair.head);
+    auto reversed = reverseList(list);
+    print(reversed);
 
     return 0;
 }
