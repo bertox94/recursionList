@@ -18,6 +18,35 @@ class List {
 private:
     int sz = 0;
 
+    void _copylist(const List &l, int skip = 0) {
+        empty();
+
+        if (abs(skip) > l.size())
+            throw std::out_of_range("abs(skip) > l.size()");
+
+        auto tmp_l = l.head;
+        int pos = 0;
+        while (skip > 0) {
+            tmp_l = tmp_l->next;
+            skip--;
+            pos++;
+        }
+
+        Node *tmp;
+        if (pos < l.size() + skip) {
+            head = tail = tmp = new Node(tmp_l);
+            pos++;
+        }
+
+        while (pos < l.size() + skip) {
+            tmp->next = new Node(tmp_l->next->val);
+            tmp_l = tmp_l->next;
+            tmp = tmp->next;
+            tail = tmp;
+            pos++;
+        }
+    }
+
 public:
 
     Node *head = nullptr;
@@ -40,30 +69,6 @@ public:
 
     explicit List(Node *node) : head(new Node(node->val)), tail(head), sz(1) {}
 
-    void _copylist(const List &l, int skip = 0) {
-        auto tmp_l = l.head;
-        int pos = 0;
-        while (skip > 0) {
-            tmp_l = tmp_l->next;
-            skip--;
-            pos++;
-        }
-
-        Node *tmp;
-        if (pos <= l.size() + skip) {
-            head = tail = tmp = new Node(tmp_l);
-            pos++;
-        }
-
-        while (pos <= l.size() + skip) {
-            tmp->next = new Node(tmp_l->next->val);
-            tmp_l = tmp_l->next;
-            tmp = tmp->next;
-            tail = tmp;
-            pos++;
-        }
-    }
-
     List(const List &l) {
         _copylist(l);
         sz = l.size();
@@ -84,11 +89,16 @@ public:
         return *this;
     }
 
+    void empty() {
+        delete head;
+        head = tail = nullptr;
+        sz = 0;
+    }
+
     void append(Node *node) {
-        auto tmp = head;
-        while (tmp->next != nullptr)
-            tmp = tmp->next;
-        tmp->next = new Node(node->val);
+        auto tmp = new Node(node->val);
+        tail->next = tmp;
+        tail = tmp;
         sz++;
     }
 
@@ -139,7 +149,7 @@ List reverseList(List list) {
 
 
 int main() {
-    List list(4);
+    List list(5);
     list = List(list, 1);
     auto l2 = List(list, 1);
     printList(list.head);
