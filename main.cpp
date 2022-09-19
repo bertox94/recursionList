@@ -8,10 +8,6 @@ public:
 
     int val;
     Node *next = nullptr;
-
-    ~Node() {
-        delete next;
-    }
 };
 
 class List {
@@ -19,7 +15,7 @@ private:
     int sz = 0;
 
     void _copylist(const List &l, int skip = 0) {
-        empty();
+        flush();
 
         if (abs(skip) > l.size())
             throw std::out_of_range("abs(skip) > l.size()");
@@ -54,7 +50,7 @@ public:
 
     List() = default;
 
-    explicit List(int size) : sz(size) {
+    explicit List(const int size) : sz(size) {
         if (size > 0) {
             int curr = 1;
             auto tmp = head = tail = new Node(curr);
@@ -67,7 +63,7 @@ public:
         }
     };
 
-    explicit List(Node *node) : head(new Node(node->val)), tail(head), sz(1) {}
+    explicit List(const Node *node) : head(new Node(node->val)), tail(head), sz(1) {}
 
     List(const List &l) {
         _copylist(l);
@@ -76,7 +72,7 @@ public:
 
     //param >0 shortens from the top
     //param <0 shortens from the bottom
-    List(List &l, int param) {
+    List(const List &l, int param) {
         _copylist(l, param);
         sz = l.size() - abs(param);
     }
@@ -89,8 +85,13 @@ public:
         return *this;
     }
 
-    void empty() {
-        delete head;
+    void flush() {
+        Node *prev, *curr = head;
+        while (curr != nullptr) {
+            prev = curr;
+            curr = curr->next;
+            delete prev;
+        }
         head = tail = nullptr;
         sz = 0;
     }
@@ -103,7 +104,7 @@ public:
     }
 
     ~List() {
-        delete head;
+        flush();
     }
 
     [[nodiscard]] int size() const {
@@ -123,7 +124,7 @@ void print(List &list) {
     }
 }
 
-List reverseList(List list) {
+List reverseList(const List &list) {
     List reversed;
     if (list.just_one_left()) {
         reversed = list;
@@ -136,7 +137,7 @@ List reverseList(List list) {
 
 
 int main() {
-    List list(5);
+    List list(5000);
     print(list);
     std::cout << std::endl;
     auto ret = reverseList(list);
