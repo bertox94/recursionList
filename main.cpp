@@ -123,17 +123,6 @@ void print(List &list) {
     }
 }
 
-//int sumElements(Node *node) {
-//    int sum;
-//    if (last(node)) {
-//        sum = node->val;
-//    } else {
-//        auto ret = sumElements(node->next);
-//        sum = ret + node->val;
-//    }
-//    return sum;
-//}
-
 List reverseList(List list) {
     List reversed;
     if (list.just_one_left()) {
@@ -147,13 +136,11 @@ List reverseList(List list) {
 
 
 int main() {
-    List list(10000);
-    list = List(list, 1);
-    auto l2 = List(list, 1);
+    List list(5);
     print(list);
     std::cout << std::endl;
-    auto reversed = reverseList(list);
-    print(reversed);
+    auto ret = reverseList(list);
+    print(ret);
 
     return 0;
 }
