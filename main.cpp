@@ -111,7 +111,7 @@ public:
         return sz;
     }
 
-    bool just_one_left() const {
+    [[nodiscard]] bool just_one_left() const {
         return size() == 1;
     }
 };
