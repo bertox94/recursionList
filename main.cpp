@@ -51,12 +51,13 @@ public:
     List() = default;
 
     explicit List(const int size) : sz(size) {
+        std::srand(time(nullptr));
         if (size > 0) {
             int curr = 1;
-            auto tmp = head = tail = new Node(curr);
+            auto tmp = head = tail = new Node(std::rand()%10);
             while (curr < size) {
                 curr++;
-                tmp->next = new Node(curr);
+                tmp->next = new Node(std::rand()%10);
                 tmp = tmp->next;
                 tail = tmp;
             }
@@ -137,7 +138,7 @@ List reverseList(const List &list) {
 
 
 int main() {
-    List list(5000);
+    List list(5);
     print(list);
     std::cout << std::endl;
     auto ret = reverseList(list);
