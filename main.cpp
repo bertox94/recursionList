@@ -4,7 +4,7 @@ class Node {
 public:
     explicit Node(int _val) : val(_val) {}
 
-    explicit Node(Node *node) : val(node->val) {}
+    explicit Node(const Node *node) : val(node->val) {}
 
     int val;
     Node *next = nullptr;
@@ -35,7 +35,7 @@ private:
         }
 
         while (pos < l.size() + skip) {
-            tmp->next = new Node(tmp_l->next->val);
+            tmp->next = new Node(tmp_l->next);
             tmp_l = tmp_l->next;
             tmp = tmp->next;
             tail = tmp;
@@ -54,17 +54,17 @@ public:
         std::srand(time(nullptr));
         if (size > 0) {
             int curr = 1;
-            auto tmp = head = tail = new Node(std::rand()%10);
+            auto tmp = head = tail = new Node(std::rand() % 10);
             while (curr < size) {
                 curr++;
-                tmp->next = new Node(std::rand()%10);
+                tmp->next = new Node(std::rand() % 10);
                 tmp = tmp->next;
                 tail = tmp;
             }
         }
     };
 
-    explicit List(const Node *node) : head(new Node(node->val)), tail(head), sz(1) {}
+    explicit List(const Node *node) : head(new Node(node)), tail(head), sz(1) {}
 
     List(const List &l) {
         _copylist(l);
@@ -98,7 +98,7 @@ public:
     }
 
     void append(Node *node) {
-        auto tmp = new Node(node->val);
+        auto tmp = new Node(node);
         tail->next = tmp;
         tail = tmp;
         sz++;
