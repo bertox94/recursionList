@@ -6,8 +6,26 @@ public:
 
     explicit Node(const Node *node) : val(node->val) {}
 
+    void appendNode(int vval) {
+        auto tmp = this;
+        while (tmp->next != nullptr)
+            tmp = tmp->next;
+        tmp->next = new Node(vval);
+        tmp->next->next = nullptr;
+    }
+
     int val;
     Node *next = nullptr;
+
+    bool has_child() const {
+        return next != nullptr;
+    }
+
+    ~Node() {
+        //std::cout << "Deleting: " << val << std::endl;
+        delete next;
+        next = nullptr;
+    }
 };
 
 class List {
@@ -117,32 +135,58 @@ public:
     }
 };
 
-void print(List &list) {
-    auto node = list.head;
-    while (node != nullptr) {
+void print(Node *node) {
+    if (node != nullptr) {
         std::cout << node->val << " ";
-        node = node->next;
+        print(node->next);
     }
 }
 
-List reverseList(const List &list) {
-    List reversed;
-    if (list.just_one_left()) {
-        reversed = list;
+//L: [head of reversed]
+Node *reverseList(Node *node) {
+    Node *head;
+    if (node->has_child()) {
+        auto head_child = reverseList(node->next);
+        head_child->appendNode(node->val);
+        head = head_child;
     } else {
-        reversed = reverseList(List(list, 1));
-        reversed.append(list.head);
+        head = new Node(node);
     }
-    return reversed;
+    return head;
+}
+
+//L: [head of reversed, last element of reversed]
+std::pair<Node *, Node *> reverseListOpt(Node *node) {
+    Node *head, *tail;
+    if (node->has_child()) {
+        auto [new_head_child, tail_child] = reverseListOpt(node->next);
+        tail_child->next = node;
+        tail = node;
+        tail->next = nullptr;
+    } else {
+        head = tail = new Node(node);
+    }
+    return {head, tail};
 }
 
 
 int main() {
-    List list(5);
-    print(list);
-    std::cout << std::endl;
-    auto ret = reverseList(list);
-    print(ret);
+    Node *root = new Node(1);
+    Node *node = root = root;
+
+    std::cout << "Creating list ..." << std::endl;
+    for (int i = 2; i <= 4000; i++) {
+        node->appendNode(i);
+        node = node->next;
+    }
+
+    //print(root);
+    //std::cout << std::endl;
+    std::cout << "Reversing list ..." << std::endl;
+    auto ret = reverseList(root);
+    //print(ret);
+    delete root;
+    delete ret;
 
     return 0;
 }
