@@ -150,10 +150,11 @@ public:
     Node *tail;
 };
 
-L reverseList(Node *node) {
+// reversed instead of reverse, it makes more clear that what you have from children it is an already reversed list
+L reversedList(Node *node) {
     L L;
     if (node->has_child()) {
-        auto Lchild = reverseList(node->next);
+        auto Lchild = reversedList(node->next);
         auto old_tail = Lchild.tail;
         auto new_tail = new Node(node->val);
         old_tail->next = new_tail;
@@ -165,25 +166,58 @@ L reverseList(Node *node) {
     return L;
 }
 
+L sortedList(Node *node) {
+    L L;
+    if (node->has_child()) {
+        auto Lchild = sortedList(node->next);
+        if (Lchild.head->val > node->val) {
+            L.head = new Node(node->val);
+            L.head->next = Lchild.head;
+        } else {
+            auto tmp = Lchild.head;
+            while (tmp->has_child() && tmp->next->val < node->val)
+                tmp = tmp->next;
+
+            auto post = tmp->next;
+            tmp->next = new Node(node->val);
+            tmp->next->next = post;
+
+            L.head = Lchild.head;
+        }
+    } else {
+        L.head = new Node(node->val);
+    }
+    return L;
+}
+
 int main() {
+    std::srand(time(nullptr));
     Node *root = new Node(1);
     Node *node = root = root;
 
     std::cout << "Creating list ..." << std::endl;
-    for (int i = 2; i <= 21000; i++) {
-        node->appendNode(i);
+    for (int i = 2; i <= 5; i++) {
+        node->appendNode(std::rand() % 30);
         node = node->next;
     }
 
-    //print(root);
-    //std::cout << std::endl;
+    print(root);
+    std::cout << std::endl;
     std::cout << "Reversing list ..." << std::endl;
-    auto ret = reverseList(root);
+    auto ret = reversedList(root);
     std::cout << "Done" << std::endl;
-    //print(ret.head);
-    //std::cout << std::endl;
+    print(ret.head);
+    std::cout << std::endl;
+
+    std::cout << "Sorting list ..." << std::endl;
+    auto ret2 = sortedList(ret.head);
+    std::cout << "Done" << std::endl;
+    print(ret2.head);
+    std::cout << std::endl;
+
     delete root;
     delete ret.head;
+    delete ret2.head;
 
     return 0;
 }
