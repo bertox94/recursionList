@@ -143,39 +143,34 @@ void print(Node *node) {
 }
 
 //L: [head of reversed]
-Node *reverseList(Node *node) {
+
+class L {
+public:
     Node *head;
-    if (node->has_child()) {
-        auto head_child = reverseList(node->next);
-        head_child->appendNode(node->val);
-        head = head_child;
-    } else {
-        head = new Node(node);
-    }
-    return head;
-}
+    Node *tail;
+};
 
-//L: [head of reversed, last element of reversed]
-std::pair<Node *, Node *> reverseListOpt(Node *node) {
-    Node *head, *tail;
+L reverseList(Node *node) {
+    L L;
     if (node->has_child()) {
-        auto [new_head_child, tail_child] = reverseListOpt(node->next);
-        tail_child->next = node;
-        tail = node;
-        tail->next = nullptr;
+        auto Lchild = reverseList(node->next);
+        auto old_tail = Lchild.tail;
+        auto new_tail = new Node(node->val);
+        old_tail->next = new_tail;
+        L.tail = new_tail;
+        L.head = Lchild.head;
     } else {
-        head = tail = new Node(node);
+        L.head = L.tail = new Node(node->val);
     }
-    return {head, tail};
+    return L;
 }
-
 
 int main() {
     Node *root = new Node(1);
     Node *node = root = root;
 
     std::cout << "Creating list ..." << std::endl;
-    for (int i = 2; i <= 4000; i++) {
+    for (int i = 2; i <= 21000; i++) {
         node->appendNode(i);
         node = node->next;
     }
@@ -184,9 +179,11 @@ int main() {
     //std::cout << std::endl;
     std::cout << "Reversing list ..." << std::endl;
     auto ret = reverseList(root);
-    //print(ret);
+    std::cout << "Done" << std::endl;
+    //print(ret.head);
+    //std::cout << std::endl;
     delete root;
-    delete ret;
+    delete ret.head;
 
     return 0;
 }
